@@ -1,8 +1,6 @@
 package ru.kredo.camunda.rest;
 
-import ru.kredo.camunda.rest.model.CamundaTask;
-import ru.kredo.camunda.rest.model.FetchTaskRequest;
-import ru.kredo.camunda.rest.model.Topic;
+import ru.kredo.camunda.rest.model.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,10 +29,21 @@ public class TestClass {
 
         FetchTaskRequest fetchTaskRequest = new FetchTaskRequest();
         fetchTaskRequest.setWorkerId("testWorker");
+        fetchTaskRequest.setMaxTasks(5);
         fetchTaskRequest.setTopics(Arrays.asList(topic));
 
         System.out.println("\n\n");
-        System.out.println("A camunda fech task");
-        service.fetchAndLock(fetchTaskRequest).forEach(System.out::println);
+        System.out.println("All camunda fech task");
+        List<FetchedCamundaTask> fetchedCamundaTasks  = service.fetchAndLock(fetchTaskRequest);
+        fetchedCamundaTasks.forEach(System.out::println);
+
+        Optional<FetchedCamundaTask> fetchedCamundaTaskOp = fetchedCamundaTasks.stream().findFirst();
+        if (fetchedCamundaTaskOp.isPresent()) {
+            System.out.println("Try to complete camunda fech task");
+            FetchedCamundaTask fetchTask = fetchedCamundaTaskOp.get();
+            FetchedCamundaTaskComplete completeReq =  new FetchedCamundaTaskComplete();
+            completeReq.setWorkerId(fetchTask.getWorkerId());
+            service.complete(fetchTask.getId(), completeReq);
+        }
     }
 }

@@ -2,6 +2,7 @@ package ru.kredo.camunda.rest;
 
 
 import ru.kredo.camunda.rest.model.CamundaTask;
+import ru.kredo.camunda.rest.model.FetchedCamundaTaskComplete;
 import ru.kredo.camunda.rest.model.FetchTaskRequest;
 import ru.kredo.camunda.rest.model.FetchedCamundaTask;
 
@@ -36,6 +37,11 @@ public interface ExternalTaskService {
     @POST
     @Path("/fetchAndLock")
     List<FetchedCamundaTask> fetchAndLock(FetchTaskRequest fetchTaskRequest);
+
+    @POST
+    @Path("/{id}/complete")
+    void complete(@PathParam("id") String id, FetchedCamundaTaskComplete completeTaskRequest);
+
     /*
     TODO
     POST /external-task/{id}/complete
